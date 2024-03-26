@@ -1,0 +1,3 @@
+[submodule "PlanWithJ/src/main/resources/config"]
+	path = PlanWithJ/src/main/resources/config
+	url = https://github.com/yony-k/SecurityKeyforPlanwithJ.git
