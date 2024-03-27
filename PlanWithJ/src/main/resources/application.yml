@@ -1,0 +1,24 @@
+server:
+  port: '80'
+
+spring:
+  profiles:
+    active: test
+  jpa:
+    database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect
+    hibernate:
+      ddl-auto: none  # option type: create, create-drop, update, validate, none
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true  
+        use_sql_comments: true  
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+            
