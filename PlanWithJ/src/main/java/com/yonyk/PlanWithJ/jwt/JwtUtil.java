@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JwtUtil {
+	public static final String BEARER_PREFIX = "Bearer "; 
 	private final Key key;
 	
 	public JwtUtil(@Value("${jwt.secret}") String secretKey) {
@@ -47,9 +48,10 @@ public class JwtUtil {
                 .compact();
 
         return JwtDTO.builder()
-                .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
+    
+    
 }

@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	
-	private final JwtUtil jp;
-	private final PrincipalDetailsService pds;
+	private final JwtUtil jwtUtil;
+	private final PrincipalDetailsService principalDetailsService;
 	
     private static final String CHARACTER_ENCODING = "UTF-8";
     private static final String CONTENT_TYPE = "application/json";
@@ -24,19 +24,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
-		String servletPath = request.getServletPath();
-		
-		// /users/sing-in 으로 요청이 들어온 경우 다음 필터로 넘김
-        if(servletPath.contains("/users/sing-in")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         
-        final String jwtToken;
-        final String username;
-        
-        
+		String tokenValue = jwtUtil.getJwtFromHeader(request);  
         
 	}
 	

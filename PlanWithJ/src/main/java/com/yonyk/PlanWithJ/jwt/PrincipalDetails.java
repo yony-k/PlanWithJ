@@ -8,14 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.yonyk.PlanWithJ.dto.User;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails{
 	
 	private final User user;
 	
-	public PrincipalDetails(User user) {
-		this.user = user;
-	}
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
