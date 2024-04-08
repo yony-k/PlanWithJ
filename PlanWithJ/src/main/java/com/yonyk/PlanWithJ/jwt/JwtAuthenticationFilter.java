@@ -47,6 +47,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 		JwtDTO token = jwtUtil.generateToken(authResult);
 		
-		response.addHeader("accessToken", JwtUtil.BEARER_PREFIX+token.getAccessToken());
+		response.addHeader(jwtUtil.AccessToken , JwtUtil.BEARER_PREFIX+token.getAccessToken());
 	}
 }
