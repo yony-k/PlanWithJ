@@ -49,6 +49,6 @@ public class User {
 	@Column
 	private String email;
 	
-	@OneToMany(mappedBy = "role")
-	private List<Role> roles;
+	@OneToMany(mappedBy = "user")
+	private List<User_Role> user_roles = new ArrayList<User_Role>();
 }

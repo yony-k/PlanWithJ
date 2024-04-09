@@ -76,7 +76,7 @@ public class SpringSecurityConfig {
 			.csrf(csrfConf -> csrfConf.disable())
 			.formLogin(loginConf -> loginConf.disable());
 		
-		http.addFilterBefore(jwtAuthenticationFilter(), JwtAuthenticationFilter.class);
+		http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();

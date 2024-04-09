@@ -48,5 +48,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		JwtDTO token = jwtUtil.generateToken(authResult);
 		
 		response.addHeader(jwtUtil.AccessToken , JwtUtil.BEARER_PREFIX+token.getAccessToken());
+		response.addHeader(jwtUtil.RefreshToken , token.getRefreshToken());
 	}
 }

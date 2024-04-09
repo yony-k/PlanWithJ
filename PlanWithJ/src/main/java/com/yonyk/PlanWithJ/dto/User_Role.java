@@ -22,10 +22,10 @@ public class User_Role {
 	private int urnum;
 	
 	@ManyToOne
-	@JoinColumn(name= "user_id")
+	@JoinColumn(name="user_id")
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name= "role_id")
+	@JoinColumn(name="role_id")
 	private Role role;
 }
