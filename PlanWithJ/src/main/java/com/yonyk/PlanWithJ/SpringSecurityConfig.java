@@ -1,5 +1,7 @@
 package com.yonyk.PlanWithJ;
 
+import java.util.Collections;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.yonyk.PlanWithJ.jwt.JwtAuthenticationFilter;
 import com.yonyk.PlanWithJ.jwt.JwtAuthorizationFilter;
@@ -66,15 +70,27 @@ public class SpringSecurityConfig {
 	}
 	
 	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:8899")); 
+            config.setAllowCredentials(true);
+            return config;
+        };
+    }
+	
+	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(authz -> authz
-				.requestMatchers("/main").permitAll()
-				.requestMatchers("/user/login").permitAll()
-				.requestMatchers("/user/sing-in").permitAll()
-				.anyRequest().authenticated())
 			.csrf(csrfConf -> csrfConf.disable())
-			.formLogin(loginConf -> loginConf.disable());
+			.cors(c-> c.configurationSource(corsConfigurationSource()))
+			.formLogin(loginConf -> loginConf.disable())
+			.authorizeHttpRequests(authz -> authz
+				.requestMatchers("/user/login").permitAll()
+				.requestMatchers("/user/sign-up").permitAll()
+				.anyRequest().authenticated());
 		
 		http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
