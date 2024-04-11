@@ -44,6 +44,7 @@ public class SpringSecurityConfig {
 	@Bean
 	public static BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder enc = new BCryptPasswordEncoder();
+		System.out.println("smith12 :"+enc.encode("smith12"));
 		return enc;
 	}
 	
@@ -73,9 +74,11 @@ public class SpringSecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
+            config.addExposedHeader("AccessToken");
+            config.addExposedHeader("RefreshToken");
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:8899")); 
+            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:8899"));
             config.setAllowCredentials(true);
             return config;
         };
