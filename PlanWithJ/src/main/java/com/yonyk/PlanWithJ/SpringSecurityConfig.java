@@ -44,7 +44,6 @@ public class SpringSecurityConfig {
 	@Bean
 	public static BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder enc = new BCryptPasswordEncoder();
-		System.out.println("smith12 :"+enc.encode("smith12"));
 		return enc;
 	}
 	
@@ -76,6 +75,7 @@ public class SpringSecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.addExposedHeader("AccessToken");
             config.addExposedHeader("RefreshToken");
+            config.addExposedHeader("nickName");
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:8899"));
@@ -93,6 +93,7 @@ public class SpringSecurityConfig {
 			.authorizeHttpRequests(authz -> authz
 				.requestMatchers("/user/login").permitAll()
 				.requestMatchers("/user/sign-up").permitAll()
+				.requestMatchers("/user/refresh_token").permitAll()
 				.anyRequest().authenticated());
 		
 		http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);

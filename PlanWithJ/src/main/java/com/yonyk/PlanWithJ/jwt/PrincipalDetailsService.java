@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yonyk.PlanWithJ.dto.User;
+import com.yonyk.PlanWithJ.entity.User;
 import com.yonyk.PlanWithJ.repo.UserRepository;
 
 import lombok.RequiredArgsConstructor;

@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import com.yonyk.PlanWithJ.entity.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,6 +35,9 @@ public class JwtUtil {
 	public static final String RefreshToken = "RefreshToken";
 	public static final String BEARER_PREFIX = "Bearer "; 
 	private final Key key;
+	
+	
+	@Autowired
 	private PrincipalDetailsService principalDetailsService;
 	
 	public JwtUtil(@Value("${spring.security.jwt.secret}") String secretKey) {
@@ -39,35 +45,20 @@ public class JwtUtil {
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 	
-    public JwtDTO generateToken(Authentication authentication) {
+    public JwtDTO getLoginToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-
-        long now = (new Date()).getTime();
-
-        Date accessTokenExpiresIn = new Date(now + 86400000);
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        return JwtDTO.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        String user_id = authentication.getName();
+        String nickName = ((PrincipalDetails)authentication.getPrincipal())
+        		.getUser().getName();
+        
+        return generateJwtDTO(authorities, user_id, nickName);
     }
     
     // 리퀘스트에서 토큰 빼내는 메소드
     public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AccessToken);
+        String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
@@ -91,7 +82,6 @@ public class JwtUtil {
         return false;
     }
     
-    
     // 토큰에서 정보 빼내는 메소드
     public Authentication getAuthentication(String token) {
     	Claims userinfo = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
@@ -100,7 +90,48 @@ public class JwtUtil {
     	return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
     
-    // 
+    // 토큰에서 아이디 빼내는 메소드
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
+    
+    // 리프레시 토큰 요청 시 새로운 액세스 토큰 만드는 메소드
+    public JwtDTO getNewToken(UserDetails userDetails) {
+    	String authorities = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+    	String user_id = userDetails.getUsername();
+    	String nickName = ((PrincipalDetails)userDetails).getUser().getName();
+   
+    	return generateJwtDTO(authorities, user_id, nickName);
+    }
+    
+    // jwtDTO 생성 메소드
+    public JwtDTO generateJwtDTO(String authorities, String user_id, String nickName) {
+    	
+    	long now = (new Date()).getTime();
+
+        Date accessTokenExpiresIn = new Date(now + 86400000);
+        String accessToken = Jwts.builder()
+                .setSubject(user_id)
+                .claim("auth", authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        String refreshToken = Jwts.builder()
+        		.setSubject(user_id)
+                .setExpiration(new Date(now + 2592000000L))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return JwtDTO.builder()
+                .accessToken(JwtUtil.BEARER_PREFIX + accessToken)
+                .refreshToken(refreshToken)
+                .nickName(nickName)
+                .build();
+    }
     
     
 }

@@ -10,4 +10,5 @@ import lombok.Data;
 public class JwtDTO {
     private String accessToken;
     private String refreshToken;
+    private String nickName;
 }

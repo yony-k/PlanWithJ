@@ -1,4 +1,4 @@
-package com.yonyk.PlanWithJ.dto;
+package com.yonyk.PlanWithJ.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,24 +12,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
-@Table(name = "role")
-@SequenceGenerator(
-        name="Role_SEQ_GENERATOR",
-        sequenceName = "Role_SEQ",
-        initialValue = 5, allocationSize = 50
-)
+@Table(name = "role_data")
 @Entity
 public class Role {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Role_SEQ_GENERATOR")
-	private int id;
-	
-	@Column
-	private String rname;
+	private String role_name;
 }

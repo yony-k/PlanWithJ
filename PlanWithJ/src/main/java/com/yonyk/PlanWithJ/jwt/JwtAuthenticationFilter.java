@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yonyk.PlanWithJ.dto.LoginDTO;
+import com.yonyk.PlanWithJ.entity.User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,8 +47,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		JwtDTO token = jwtUtil.generateToken(authResult);
-		response.addHeader(jwtUtil.AccessToken , JwtUtil.BEARER_PREFIX+token.getAccessToken());
+		JwtDTO token = jwtUtil.getLoginToken(authResult);
+		
+		response.addHeader("nickname", java.net.URLEncoder.encode(token.getNickName(), "UTF-8"));
+		response.addHeader(jwtUtil.AccessToken , token.getAccessToken());
 		response.addHeader(jwtUtil.RefreshToken , token.getRefreshToken());
 	}
 }

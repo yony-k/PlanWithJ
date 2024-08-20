@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.yonyk.PlanWithJ.dto.User;
+import com.yonyk.PlanWithJ.entity.User;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class PrincipalDetails implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		this.user.getUser_roles().forEach(R -> {
-			authorities.add(() -> R.getRole().getRname());
+			authorities.add(() -> R.getRole().getRole_name());
 		});
 		return authorities;
 	}
@@ -33,7 +33,7 @@ public class PrincipalDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return this.user.getName();
+		return this.user.getUser_id();
 	}
 
 	@Override

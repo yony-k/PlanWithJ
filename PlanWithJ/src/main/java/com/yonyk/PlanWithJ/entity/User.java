@@ -1,4 +1,4 @@
-package com.yonyk.PlanWithJ.dto;
+package com.yonyk.PlanWithJ.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,36 +19,28 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
-@Table(name = "userdata")
-@SequenceGenerator(
-        name="USER_SEQ_GENERATOR",
-        sequenceName = "USER_SEQ",
-        initialValue = 5, allocationSize = 50
-)
+@Table(name = "user_data")
 @Entity
 public class User {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ_GENERATOR")
-	private String id;
+	private String user_id;
 	
-	@Column(nullable = false)
 	private String name;
-	
-	@Column(nullable = false)
 	private String pwd;
+	private String email;
 	
 	@Transient
 	private String confirmPwd;
 	
-	@Column
-	private String email;
-	
+	@Builder.Default
 	@OneToMany(mappedBy = "user")
-	private List<User_Role> user_roles = new ArrayList<User_Role>();
+	private List<User_Role> user_roles = new ArrayList();
 }
